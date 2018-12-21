@@ -1,4 +1,4 @@
-/* 
+/*
   Copyright 2008-2018 LibRaw LLC (info@libraw.org)
 
 LibRaw is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@ it under the terms of the one of two licenses as you choose:
 
 
 #include <math.h>
+#include "libraw/swab.h"
 #define CLASS LibRaw::
 #include "libraw/libraw_types.h"
 #define LIBRAW_LIBRARY_BUILD

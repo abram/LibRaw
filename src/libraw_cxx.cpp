@@ -17,6 +17,7 @@ it under the terms of the one of two licenses as you choose:
  */
 
 #include <math.h>
+
 #include <errno.h>
 #include <float.h>
 #include <new>
@@ -31,6 +32,7 @@ it under the terms of the one of two licenses as you choose:
 #endif
 #define LIBRAW_LIBRARY_BUILD
 #include "libraw/libraw.h"
+#include "libraw/swab.h"
 #include "internal/defines.h"
 #ifdef USE_ZLIB
 #include <zlib.h>
@@ -2358,7 +2360,7 @@ int LibRaw::open_datastream(LibRaw_abstract_datastream *stream)
     	imgdata.color.as_shot_wb_applied = LIBRAW_ASWB_APPLIED | LIBRAW_ASWB_PENTAX;
     else
     	imgdata.color.as_shot_wb_applied = 0;
-      
+
     // Adjust Highlight Linearity limit
     if (C.linear_max[0] < 0)
     {
@@ -3374,7 +3376,7 @@ int LibRaw::raw2image(void)
     get_decoder_info(&decoder_info);
 
     // Move saved bitmap to imgdata.image
-    if ((imgdata.idata.filters || P1.colors == 1) 
+    if ((imgdata.idata.filters || P1.colors == 1)
        && imgdata.rawdata.raw_image)
     {
       if (IO.fuji_width)
