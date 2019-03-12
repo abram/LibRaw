@@ -1,6 +1,6 @@
 /* -*- C++ -*-
  * File: libraw_const.h
- * Copyright 2008-2018 LibRaw LLC (info@libraw.org)
+ * Copyright 2008-2019 LibRaw LLC (info@libraw.org)
  * Created: Sat Mar  8 , 2008
  * LibRaw error codes
 LibRaw is free software; you can redistribute it and/or modify
@@ -180,6 +180,7 @@ enum LibRaw_camera_mounts
   LIBRAW_MOUNT_Leica_TL = 23,
   LIBRAW_MOUNT_Leica_SL = 24,
   LIBRAW_MOUNT_Nikon_Z = 25,
+  LIBRAW_MOUNT_Canon_RF = 26,
   LIBRAW_MOUNT_FixedLens = 99
 };
 
@@ -233,7 +234,8 @@ enum LibRaw_processing_options
   LIBRAW_PROCESSING_USE_PPM16_THUMBS = 1 << 13,
   LIBRAW_PROCESSING_SKIP_MAKERNOTES = 1 << 14,
   LIBRAW_PROCESSING_CHECK_DNG_ILLUMINANT = 1 << 15,
-  LIBRAW_PROCESSING_DNGSDK_ZEROCOPY = 1 << 16
+  LIBRAW_PROCESSING_DNGSDK_ZEROCOPY = 1 << 16,
+  LIBRAW_PROCESSING_ZEROFILTERS_FOR_MONOCHROMETIFFS = 1 << 17,
 };
 
 enum LibRaw_decoder_flags

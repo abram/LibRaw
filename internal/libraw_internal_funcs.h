@@ -1,6 +1,6 @@
 /* -*- C++ -*-
  * File: libraw_internal_funcs.h
- * Copyright 2008-2018 LibRaw LLC (info@libraw.org)
+ * Copyright 2008-2019 LibRaw LLC (info@libraw.org)
  * Created: Sat Mar  14, 2008
 
 LibRaw is free software; you can redistribute it and/or modify
@@ -32,7 +32,7 @@ it under the terms of the one of two licenses as you choose:
     ushort      sget2Rev(uchar *s);
     unsigned setCanonBodyFeatures (unsigned id);
     void 	processCanonCameraInfo (unsigned id, uchar *CameraInfo, unsigned maxlen, unsigned type);
-    void	Canon_CameraSettings();
+    void	Canon_CameraSettings(unsigned len);
     void	Canon_WBpresets (int skip1, int skip2);
     void	Canon_WBCTpresets (short WBCTversion);
     void	parseCanonMakernotes (unsigned tag, unsigned type, unsigned len);
@@ -85,6 +85,7 @@ it under the terms of the one of two licenses as you choose:
     int 	parseLeicaInternalBodySerial(unsigned len);
     void 	parseLeicaMakernote(int base, int uptag, unsigned MakernoteTagType);
     void 	parseAdobePanoMakernote ();
+    void parseAdobeRAFMakernote ();
 
     ushort      get2();
     unsigned    sget4 (uchar *s);

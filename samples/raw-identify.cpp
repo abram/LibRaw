@@ -1,6 +1,6 @@
 /* -*- C++ -*-
  * File: identify.cpp
- * Copyright 2008-2018 LibRaw LLC (info@libraw.org)
+ * Copyright 2008-2019 LibRaw LLC (info@libraw.org)
  * Created: Sat Mar  8, 2008
  *
  * LibRaw C++ demo: emulates dcraw -i [-v]
@@ -111,7 +111,7 @@ int main(int ac, char *av[])
 {
   int ret;
   int verbose = 0, print_sz = 0, print_unpack = 0, print_frame = 0, print_wb = 0;
-  int compact = 0, print_1 = 0, print_2 = 0;
+  int compact = 0, print_0 = 0, print_1 = 0, print_2 = 0;
   LibRaw MyCoolRawProcessor;
 
   for (int i = 1; i < ac; i++)
@@ -132,6 +132,8 @@ int main(int ac, char *av[])
         O.half_size = 1;
       if (av[i][1] == 'f' && av[i][2] == 0)
         print_frame++;
+      if (av[i][1] == '0' && av[i][2] == 0)
+        print_0++;
       if (av[i][1] == '1' && av[i][2] == 0)
         print_1++;
       if (av[i][1] == '2' && av[i][2] == 0)
@@ -148,6 +150,12 @@ int main(int ac, char *av[])
     if (print_sz)
     {
       printf("%s\t%s\t%s\t%d\t%d\n", av[i], P1.make, P1.model, S.width, S.height);
+    }
+    else if (print_0) {
+/*
+      printf ("filename\t%s\tmodel\t%s\tisTSNERDTS\t%d\tRAF version\t%s\tRAF data version\t0x%x\tis4K\t%d\n",
+        av[i], P1.model, Fuji.isTSNERDTS, Fuji.RAFVersion, Fuji.RAFDataVersion, P2.is_4K_RAFdata);
+*/
     }
     else if (print_1)
     {

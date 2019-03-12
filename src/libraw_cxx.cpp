@@ -1,6 +1,6 @@
 /* -*- C++ -*-
  * File: libraw_cxx.cpp
- * Copyright 2008-2018 LibRaw LLC (info@libraw.org)
+ * Copyright 2008-2019 LibRaw LLC (info@libraw.org)
  * Created: Sat Mar  8 , 2008
  *
  * LibRaw C++ interface (implementation)
@@ -2243,10 +2243,19 @@ int LibRaw::open_datastream(LibRaw_abstract_datastream *stream)
       else if (S.raw_width == 5504)
         S.width = S.raw_width - (S.height > 3664 ? 8 : 32);
     }
-	if (!strncasecmp(imgdata.idata.make, "Sony", 4) && !imgdata.idata.dng_version && !strncasecmp(imgdata.idata.model, "ILCE-7RM3", 9) &&
-		S.raw_width == 5216) // A7RM3 in APS mode
-		S.width = S.raw_width - 32;
-
+	if (!strncasecmp(imgdata.idata.make, "Sony", 4) && !imgdata.idata.dng_version)
+	{
+		if(	((!strncasecmp(imgdata.idata.model, "ILCE-7RM", 8) || !strcasecmp(imgdata.idata.model,"ILCA-99M2"))
+			&& S.raw_width == 5216) // A7RM2/M3/A99M2 in APS mode
+			|| (!strcasecmp(imgdata.idata.model, "ILCE-7R") && S.raw_width >= 4580 && S.raw_width < 5020) // A7R in crop mode, no samples, so size est.
+			|| (!strcasecmp(imgdata.idata.model, "ILCE-7") && S.raw_width== 3968) // A7 in crop mode
+			|| 	((!strncasecmp(imgdata.idata.model, "ILCE-7M", 7) || !strcasecmp(imgdata.idata.model,"ILCE-9")
+				|| !strcasecmp(imgdata.idata.model,"SLT-A99V")) // Is SLT-A99 also has APS-C mode??
+				&& S.raw_width > 3750 && S.raw_width < 4120) // A7M2, A7M3, AA9, most likely APS-C raw_width is 3968 (same w/ A7), but no samples, so guess
+			|| (!strncasecmp(imgdata.idata.model, "ILCE-7S",7) && S.raw_width == 2816) // A7S2=> exact, hope it works for A7S-I too
+		)
+			S.width = S.raw_width - 32;
+	}
 
     if (!strcasecmp(imgdata.idata.make, "Pentax") &&
         /*!strcasecmp(imgdata.idata.model,"K-3 II")  &&*/ imgdata.idata.raw_count == 4 &&
@@ -2352,7 +2361,8 @@ int LibRaw::open_datastream(LibRaw_abstract_datastream *stream)
     // Adjust wb_already_applied
     if( load_raw == &LibRaw::nikon_load_sraw)
     	imgdata.color.as_shot_wb_applied = LIBRAW_ASWB_APPLIED | LIBRAW_ASWB_NIKON_SRAW;
-    else if(!strcasecmp(imgdata.idata.make,"Canon") && imgdata.makernotes.canon.multishot[0])
+    else if(!strcasecmp(imgdata.idata.make,"Canon") && imgdata.makernotes.canon.multishot[0] >= 8 
+            && imgdata.makernotes.canon.multishot[1] > 0)
     	imgdata.color.as_shot_wb_applied = LIBRAW_ASWB_APPLIED | LIBRAW_ASWB_CANON;
     else if(!strcasecmp(imgdata.idata.make,"Nikon") && imgdata.makernotes.nikon.ExposureMode == 1)
     	imgdata.color.as_shot_wb_applied = LIBRAW_ASWB_APPLIED | LIBRAW_ASWB_NIKON;
@@ -3348,7 +3358,7 @@ int LibRaw::raw2image(void)
   {
     raw2image_start();
 
-    if (is_phaseone_compressed() && imgdata.rawdata.raw_image)
+    if (is_phaseone_compressed() && imgdata.rawdata.raw_alloc)
     {
       phase_one_allocate_tempbuffer();
       int rc = phase_one_subtract_black((ushort *)imgdata.rawdata.raw_alloc, imgdata.rawdata.raw_image);
@@ -5324,6 +5334,7 @@ static const char *static_camera_list[] = {
 	"Apple QuickTake 150",
 	"Apple QuickTake 200",
 	"ARRIRAW format",
+	"ASUS ZenPhone4",
 	"AVT F-080C",
 	"AVT F-145C",
 	"AVT F-201C",
@@ -5349,6 +5360,7 @@ static const char *static_camera_list[] = {
 	"Canon PowerShot A530 (CHDK hack)",
 	"Canon PowerShot A540 (CHDK hack)",
 	"Canon PowerShot A550 (CHDK hack)",
+	"Canon PowerShot A560 (CHDK hack)",
 	"Canon PowerShot A570 (CHDK hack)",
 	"Canon PowerShot A590 (CHDK hack)",
 	"Canon PowerShot A610 (CHDK hack)",
@@ -5529,6 +5541,7 @@ static const char *static_camera_list[] = {
 	"Casio Exlim Pro 505",
 	"Casio Exlim Pro 600",
 	"Casio Exlim Pro 700",
+	"CLAUSS pix500",
 	"Contax N Digital",
 	"Creative PC-CAM 600",
 	"Digital Bolex D16",
@@ -5618,6 +5631,7 @@ static const char *static_camera_list[] = {
 	"FujiFilm X-T3",
 	"FujiFilm X-T10",
 	"FujiFilm X-T20",
+	"FujiFilm X-T30",
 	"FujiFilm X-T100",
 	"FujiFilm IS-1",
 	"Gione E7",
@@ -5672,6 +5686,7 @@ static const char *static_camera_list[] = {
 	"Huawei P20 (EML-L09)",
 	"Huawei P20 Pro (CLT-L29)",
 	"Huawei Honor6a",
+	"Huawei Honor7a pro",
 	"Huawei Honor8 (FRD-L09)",
 	"Huawei Honor9",
 	"Huawei Honor10",
@@ -5926,6 +5941,7 @@ static const char *static_camera_list[] = {
 	"Nikon E8700",
 	"Nikon E8800",
 	"Nikon Coolpix A",
+	"Nikon Coolpix A1000",
 	"Nikon Coolpix B700",
 	"Nikon Coolpix P330",
 	"Nikon Coolpix P340",
@@ -5940,6 +5956,7 @@ static const char *static_camera_list[] = {
 	"Nokia N95",
 	"Nokia X2",
 	"Nokia 1200x1600",
+	"Nokia Lumia 930",
 	"Nokia Lumia 950 XL",
 	"Nokia Lumia 1020",
 	"Nokia Lumia 1520",
@@ -5987,6 +6004,7 @@ static const char *static_camera_list[] = {
 	"Olympus E-PM2",
 	"Olympus E-M1",
 	"Olympus E-M1 Mark II",
+	"Olympus E-M1X",
 	"Olympus E-M10",
 	"Olympus E-M10 Mark II",
 	"Olympus E-M10 Mark III",
@@ -6089,6 +6107,7 @@ static const char *static_camera_list[] = {
 	"Panasonic DC-ZS70 (DC-TZ90/91/92, DC-T93)",
 	"Panasonic DC-TZ100/101/ZS100",
 	"Panasonic DC-TZ200/ZS200/TZ202",
+	"PARROT Anafi",
 	"PARROT Bebop 2",
 	"PARROT Bebop Drone",
 	"Pentax *ist D",
@@ -6280,6 +6299,7 @@ static const char *static_camera_list[] = {
 	"Sony ILCE-5100",
 	"Sony ILCE-6000",
 	"Sony ILCE-6300",
+	"Sony ILCE-6400",
 	"Sony ILCE-6500",
 	"Sony ILCE-QX1",
 	"Sony DSC-F828",
@@ -6362,6 +6382,7 @@ static const char *static_camera_list[] = {
 	"YUNEEC CGO4",
 	"Xiaomi MI3",
 	"Xiaomi RedMi Note3 Pro",
+	"Xiaomi FIMI X8SE",
 	"Xiaoyi YIAC3 (YI 4k)",
 	NULL
 };
@@ -6422,6 +6443,10 @@ const char *LibRaw::strprogress(enum LibRaw_progress p)
 }
 
 #undef ID
+/* DS conflicts with a define in /usr/include/sys/regset.h on Solaris */
+#if defined __sun && defined DS
+#undef DS
+#endif
 
 #include "../internal/libraw_x3f.cpp"
 
@@ -6477,7 +6502,6 @@ void LibRaw::parse_x3f()
   _x3f_data = x3f;
 
   x3f_header_t *H = NULL;
-  x3f_directory_section_t *DS = NULL;
 
   H = &x3f->header;
   // Parse RAW size from RAW section
@@ -6751,6 +6775,9 @@ void LibRaw::x3f_dpq_interpolate_rg()
   }
 }
 
+#ifdef _ABS
+#undef _ABS
+#endif
 #define _ABS(a) ((a) < 0 ? -(a) : (a))
 
 #undef CLIP

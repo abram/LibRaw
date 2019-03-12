@@ -1,6 +1,6 @@
 /* -*- C++ -*-
  * File: libraw_types.h
- * Copyright 2008-2018 LibRaw LLC (info@libraw.org)
+ * Copyright 2008-2019 LibRaw LLC (info@libraw.org)
  * Created: Sat Mar  8 , 2008
  *
  * LibRaw C data structures
@@ -302,6 +302,7 @@ typedef unsigned long long UINT64;
     int AFMicroAdjMode;
     float AFMicroAdjValue;
     short MakernotesFlip;
+    short SRAWQuality;
 
   } libraw_canon_makernotes_t;
 
@@ -341,6 +342,10 @@ E550, E900, F810, S5600, S6500fd, S9000, S9500, S100FS
     ushort FrameRate;
     ushort FrameWidth;
     ushort FrameHeight;
+    char SerialSignature[0x0c+1];
+    char RAFVersion[4+1];
+    ushort RAFDataVersion;
+    int isTSNERDTS;
   } libraw_fuji_info_t;
 
   typedef struct
@@ -437,6 +442,8 @@ E550, E900, F810, S5600, S6500fd, S9000, S9500, S100FS
     ushort BlackLevelDim;
     float BlackLevel[8];
     unsigned Multishot;  /* 0 is Off, 65536 is Pixel Shift */
+    float gamma;
+    int is_pana_raw;
   } libraw_panasonic_makernotes_t;
 
   typedef struct
@@ -643,7 +650,8 @@ E550, E900, F810, S5600, S6500fd, S9000, S9500, S100FS
     float exifCameraElevationAngle;
     float real_ISO;
     unsigned is_NikonTransfer;
-    unsigned is_4K_RAFdata; /* =1 for Fuji X-A3, X-A5, X-A10, X-A20, X-T100 */
+    unsigned is_4K_RAFdata; /* =1 for Fuji X-A3, X-A5, X-A10, X-A20, X-T100, XF10 */
+    unsigned is_PentaxRicohMakernotes; /* =1 for Ricoh software by Pentax, Camera DNG */
   } libraw_imgother_t;
 
   typedef struct
@@ -818,7 +826,9 @@ E550, E900, F810, S5600, S6500fd, S9000, S9500, S100FS
   {
     unsigned fsize;
     ushort rw, rh;
-    uchar lm, tm, rm, bm, lf, cf, max, flags;
+    uchar lm, tm, rm, bm;
+    ushort lf;
+    uchar cf, max, flags;
     char t_make[10], t_model[20];
     ushort offset;
   } libraw_custom_camera_t;

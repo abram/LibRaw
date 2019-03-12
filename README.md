@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ### LibRaw-201812 snapshot note:
+=======
+### LibRaw-201903 snapshot note:
+>>>>>>> d4f05dd1b9b2d44c8f7e82043cbad3c724db2416
 This branch diverged from old master. To update your copy use
 ~~~
 git fetch
@@ -18,7 +22,7 @@ RAW conversion.
 The library is intended for embedding in RAW converters, data analyzers, and 
 other programs using RAW files as the initial data.
 
-LibRaw library, Copyright &copy; 2008-2018 LibRaw LLC (info@libraw.org)
+LibRaw library, Copyright &copy; 2008-2019 LibRaw LLC (info@libraw.org)
 The library includes source code from
       
      dcraw.c, Dave Coffin's raw photo decoder
